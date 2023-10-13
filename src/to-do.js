@@ -1,12 +1,18 @@
-export {createProject, methods}
+import {storage} from "./storage.js"
+
+export {createProject, createTask, methods}
 
 function createProject (title) {
     return {title}
 }
 
 function createTask (title, description, dueDate, isPriority, isChecked) {
-    return {title, description, dueDate, isPriority, isChecked}
+
+    let task = {title, description, dueDate, isPriority, isChecked}
+    storage.storeObj(task)
+    return task
 }
+
 
 
 let methods = {
@@ -20,13 +26,21 @@ let methods = {
    }
 }
 
+/* let taskMethods = {
 
-let pro = createProject("OLA")
+} */
+
+function edit () {
+
+}
+
+
+//let pro = createProject("OLA")
 let task = createTask("pasear perro", "salir a camniar con el picho", "18-10-23", false, false)
 
 console.log(task)
 
-Object.assign(pro, methods )
+//Object.assign(pro, methods )
 Object.assign(task, methods)
 
 function addMethods (obj, meth) {
