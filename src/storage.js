@@ -1,4 +1,5 @@
 export {/* storeObj, deleteObj, retrieveObj */ storage}
+import {methods} from "./to-do.js"
 
 let storage = {
      storeObj (obj){
@@ -13,6 +14,7 @@ let storage = {
     retrieveObj (obj) {
        let objStr = localStorage.getItem(`${obj.title}`)
        let objParse = JSON.parse(objStr)
+       Object.assign(objParse, methods )
     
        return objParse
     }
