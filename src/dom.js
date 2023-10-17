@@ -95,8 +95,13 @@ function taskElement (e) {
     let date = document.createElement("p")
     date.textContent = taskDate.value
 
+    let deleteTaskBtn = document.createElement("button")
+    deleteTaskBtn.textContent = "x"
+    deleteTaskBtn.classList.add("delete-task-btn")
+
     taskEl.appendChild(title)
     taskEl.appendChild(date)
+    taskEl.appendChild(deleteTaskBtn)
     taskContainer.appendChild(taskEl)
     main.insertBefore(taskContainer, btnTask)
 
