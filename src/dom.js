@@ -41,14 +41,15 @@ function projectElement (e) {
     let list = document.createElement("li")
     let projectEl = document.createElement("div")
     projectEl.classList.add("project-element")
+    projectEl.addEventListener("click", mainRender)
 
     let title = document.createElement("p")
     title.textContent = projectTitle.value
-    title.addEventListener("click", mainRender)
 
     let deleteProjectBtn = document.createElement("button")
-    deleteProjectBtn.textContent = "x"
     deleteProjectBtn.classList.add("delete-project-btn")
+    deleteProjectBtn.addEventListener("click", deleteEl)
+
 
     projectEl.appendChild(title)
     projectEl.appendChild(deleteProjectBtn)
@@ -65,7 +66,7 @@ function mainRender (e) {
 
 
     let mainTitle = document.querySelector(".main-title")
-    mainTitle.textContent = e.target.textContent
+    mainTitle.textContent = e.target.textContent || "Title"
 
     let taskContainer = document.querySelector(".task-container")
     /* main.insertBefore(taskContainer, btnTask) */
@@ -89,6 +90,10 @@ function taskElement (e) {
     let taskEl = document.createElement("div")
     taskEl.classList.add("task-element")
 
+    let check = document.createElement("span")
+    check.classList.add("uncheck")
+    check.addEventListener("click", isChecked)
+
     let title = document.createElement("p")
     title.textContent = taskTitle.value
 
@@ -96,9 +101,10 @@ function taskElement (e) {
     date.textContent = taskDate.value
 
     let deleteTaskBtn = document.createElement("button")
-    deleteTaskBtn.textContent = "x"
     deleteTaskBtn.classList.add("delete-task-btn")
+    deleteTaskBtn.addEventListener("click", deleteEl)
 
+    taskEl.appendChild(check)
     taskEl.appendChild(title)
     taskEl.appendChild(date)
     taskEl.appendChild(deleteTaskBtn)
@@ -123,6 +129,18 @@ function taskDialog(e){
 function taskDialogClose (e) {
     e.preventDefault()
     dialog2.close()
+}
+
+function isChecked (e) {
+    if(e.target.className === "uncheck") {
+        e.target.className = "checked"
+    } else {
+        e.target.className = "uncheck"
+    }
+}
+
+function deleteEl(e) {
+    e.target.parentElement.remove()
 }
 
 /* function mainCreator () {

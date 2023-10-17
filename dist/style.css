@@ -102,8 +102,10 @@ ul button, .delete-task-btn {
     height: 20px;
     border-radius: 50%;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    background-image: url(../img/cross-small.svg);
+    background-size: contain;
+    background-position: center;
+
 }
 
 ul button:hover, .delete-task-btn:hover {
@@ -167,7 +169,7 @@ main {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-areas: 
-        "checklist title title . . date date . btn";
+        "checkbox title title . . date date . btn";
     justify-content: start;
     align-items: start;
 }
@@ -193,6 +195,24 @@ main {
 
 .task-element button {
     grid-area: btn;
+}
+
+.task-element span{
+    grid-area: checkbox;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--white-color);
+    align-self: center;
+    margin-left: 7px;
+    display: inline-block;
+}
+
+.task-element span.checked {
+    background-image: url(../img/check.png);
+    background-position: center;
+    background-size: contain;
+
 }
 
 input {
