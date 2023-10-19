@@ -12,7 +12,7 @@ let storage = {
     },
     
     retrieveObj (obj) {
-       let objStr = localStorage.getItem(`${obj.title}`)
+       let objStr = localStorage.getItem(obj)
        let objParse = JSON.parse(objStr)
        Object.assign(objParse, methods )
     

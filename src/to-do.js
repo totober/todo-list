@@ -1,21 +1,41 @@
 import {storage} from "./storage.js"
+import { projectElementCreator, getProjectData } from "./dom.js"
 
-export {createProject, createTask, methods}
+export {Project, Task, methods}
 
-function createProject (title) {
-    return {title}
+class Project {
+
+   constructor(title, id) {
+    this.title = title,
+    this.id = id,
+    this.list = []
+   }
+
+   add (newTask) {
+    this.list.push(newTask)
+   }
+
 }
 
-function createTask (title, description, dueDate, isPriority, isChecked) {
 
-    let task = {title, description, dueDate, isPriority, isChecked}
-    storage.storeObj(task)
-    return task
+class Task {
+    constructor(title, date, description, isPriority, isChecked) {
+        this.title = title,
+        this.date = date,
+        this.description = description,
+        this.isPriority = isPriority,
+        this.isChecked = isChecked
+    }
+
+
 }
-
 
 
 let methods = {
+
+    add (newTask) {
+        this.list.push(newTask)
+    }, 
    delete: function () {
     //this.remove()
     console.log("deleted")
@@ -26,24 +46,6 @@ let methods = {
    }
 }
 
-
-/* let taskMethods = {
-
-} */
-
-function edit () {
-
-}
+//let task = createTask("pasear perro", "salir a camniar con el picho", "18-10-23", false, false)
 
 
-//let pro = createProject("OLA")
-let task = createTask("pasear perro", "salir a camniar con el picho", "18-10-23", false, false)
-
-console.log(task)
-
-//Object.assign(pro, methods )
-Object.assign(task, methods)
-
-function addMethods (obj, meth) {
-   return Object.assign(obj, meth)
-}
