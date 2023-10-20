@@ -9,7 +9,7 @@ let elements = {
         createBtn: document.querySelector(".btn-project")
         .addEventListener("click", projectDialog),
         addBtn: document.querySelector(".btn-project-add")
-        .addEventListener("click", projectElementCreator),
+        .addEventListener("click", projectElementAdded),
         cancelBtn: document.querySelector(".btn-project-cancel")
         .addEventListener("click", projectDialogClose),
         dialog: document.querySelector(".project-dialog")
@@ -78,34 +78,33 @@ function getProjectData(e) {
     return titleName
 }
 
+function projectElementAdded (e) {
 
-function projectElementCreator (e) {
+    projectElementCreator(getProjectData())
 
-   // e.preventDefault();
+    elements.project.dialog.close()
+}
+
+
+function projectElementCreator (title) {
     
     let list = document.createElement("li")
     let projectEl = document.createElement("div")
     projectEl.classList.add("project-element")
     projectEl.addEventListener("click",  mainRender /* taskRender*/)
 
-    let title = document.createElement("p")
-    title.textContent = getProjectData()
+    let titleEl = document.createElement("p")
+    titleEl.textContent = title
 
     let deleteProjectBtn = document.createElement("button")
     deleteProjectBtn.classList.add("delete-project-btn")
     deleteProjectBtn.addEventListener("click", deleteProject)
 
 
-    projectEl.appendChild(title)
+    projectEl.appendChild(titleEl)
     projectEl.appendChild(deleteProjectBtn)
     list.appendChild(projectEl)
-
-    projectList.appendChild(list)
-
-    elements.project.dialog.close()
-
-    //return title
-    
+    projectList.appendChild(list)    
 }
 
 
@@ -127,6 +126,35 @@ function mainCreator () {
    // return /* taskContainer */ createTaskBtn 
 }
 
+window.addEventListener("load", homeRender)
+
+function homeRender(e) {
+    let projectStorage = localStorage
+    console.log(projectStorage)
+    let projectValues = Object.values(projectStorage)
+    console.log(projectValues)
+
+ /*    let keys = Object.keys(projectArray)
+    console.log(keys)
+    let entries = Object.entries(projectArray)
+    console.log(entries)
+    let values = Object.values(projectArray)
+    console.log(values) */
+    
+     let projectArray = []
+    for (let project of projectValues) {
+        
+        projectArray.push(JSON.parse(project))
+
+    }
+    console.log(projectArray) 
+
+    projectArray.forEach(project => {
+        projectElementCreator(project.title)
+    })
+
+}
+
 
 function mainRender(e){
 
@@ -140,12 +168,12 @@ function mainRender(e){
     mainTitle.textContent = e.target.textContent || "Title";
     
     console.log(taskContainer)
-   // taskContainer.setAttribute("data-id", e.target.textContent)
+
     taskContainer.setAttribute("data-id", storage.getId(this.textContent))
     console.log(this)
 
     createTaskBtn.setAttribute("data-id", e.target.textContent)
-    //taskContainer.appendChild(mainCreator())
+
     taskRender()
 }
 
@@ -153,11 +181,9 @@ function taskRender (e) {
     
     let mainTitle = document.querySelector(".main-title").textContent
     console.log(mainTitle)
-    let proj = storage.retrieveObj(mainTitle)
-    console.log(proj)
-    console.log(proj.list)
+    let project = storage.retrieveObj(mainTitle)
 
-    proj.list.forEach(task => {
+    project.list.forEach(task => {
         taskElementCreator(task.title, task.date)         
     }) 
 }
