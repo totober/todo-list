@@ -1,7 +1,8 @@
 export {taskElement, projectElementCreator, getProjectData, getTaskData}
 
 import { Task } from "./to-do.js"
-import { test } from "./index.js"
+import { storage } from "./storage.js"
+
 
 let elements = {
     project: {
@@ -58,6 +59,8 @@ btnTaskCancel.addEventListener("click", taskDialogClose)  */
 //let btnTask = document.querySelector(".btn-task")
 
 let main = document.querySelector("main")
+let createTaskBtn = document.querySelector(".create-task-btn")
+createTaskBtn.addEventListener("click", taskDialog)
 
 
 function projectDialog(e) {
@@ -75,31 +78,6 @@ function getProjectData(e) {
     return titleName
 }
 
-/* function projectElement (e) {
-
-    e.preventDefault();
-    
-    let list = document.createElement("li")
-    let projectEl = document.createElement("div")
-    projectEl.classList.add("project-element")
-    projectEl.addEventListener("click", mainRender)
-
-    let title = document.createElement("p")
-    title.textContent = projectTitle.value
-
-    let deleteProjectBtn = document.createElement("button")
-    deleteProjectBtn.classList.add("delete-project-btn")
-    deleteProjectBtn.addEventListener("click", deleteEl)
-
-
-    projectEl.appendChild(title)
-    projectEl.appendChild(deleteProjectBtn)
-    list.appendChild(projectEl)
-
-    projectList.appendChild(list)
-
-    dialog.close()   
-} */
 
 function projectElementCreator (e) {
 
@@ -115,7 +93,7 @@ function projectElementCreator (e) {
 
     let deleteProjectBtn = document.createElement("button")
     deleteProjectBtn.classList.add("delete-project-btn")
-    deleteProjectBtn.addEventListener("click", deleteEl)
+    deleteProjectBtn.addEventListener("click", deleteProject)
 
 
     projectEl.appendChild(title)
@@ -138,7 +116,7 @@ function mainCreator () {
     taskContainer.classList.add("task-container");
     taskContainer.classList.add(e.target.textContent) */
 
-    let createTaskBtn = document.createElement("button")
+   /*  let createTaskBtn = document.createElement("button")
             createTaskBtn.classList.add("create-task-btn")
             
             createTaskBtn.textContent = "Add task"
@@ -146,13 +124,15 @@ function mainCreator () {
 
     /* taskContainer.appendChild(createTaskBtn) */
 
-    return /* taskContainer */ createTaskBtn
+   // return /* taskContainer */ createTaskBtn 
 }
 
 
 function mainRender(e){
 
+
     let taskContainer = document.querySelector(".task-container")
+    let createTaskBtn = document.querySelector(".create-task-btn")
 
     taskContainer.innerHTML = "";
 
@@ -160,27 +140,15 @@ function mainRender(e){
     mainTitle.textContent = e.target.textContent || "Title";
     
     console.log(taskContainer)
-    taskContainer.setAttribute("data-id", e.target.textContent)
+   // taskContainer.setAttribute("data-id", e.target.textContent)
+    taskContainer.setAttribute("data-id", storage.getId(this.textContent))
+    console.log(this)
 
-    taskContainer.appendChild(mainCreator())
+    createTaskBtn.setAttribute("data-id", e.target.textContent)
+    //taskContainer.appendChild(mainCreator())
+
 }
 
-/* !mainChildren.forEach(element => 
-    element.classList.contains("create-task-btn")) */
-
-/* function getTaskDate (){
-   
-    let taskDate = document.querySelector(".task-date")
-    let date = taskDate.value
-
-    return date
-}
-
-function getTaskTitle() {
-    let taskTitle = document.querySelector(".task-title")
-    let title = taskTitle.value
-    return title
-} */
 
 function getTaskData (){
    
@@ -221,13 +189,14 @@ function taskElement (e) {
 
     let deleteTaskBtn = document.createElement("button")
     deleteTaskBtn.classList.add("delete-task-btn")
-    deleteTaskBtn.addEventListener("click", deleteEl)
+    deleteTaskBtn.addEventListener("click", deleteTask)
 
     taskEl.appendChild(check)
     taskEl.appendChild(titleEl)
     taskEl.appendChild(dateEl)
     taskEl.appendChild(deleteTaskBtn)
-    taskContainer.insertBefore(taskEl, createTaskBtn)
+    //taskContainer.insertBefore(taskEl, createTaskBtn)
+    taskContainer.appendChild(taskEl)
 
     
 
@@ -260,9 +229,18 @@ function isChecked (e) {
     }
 }
 
-function deleteEl(e) {
+
+function deleteProject(e) {
+
     e.target.parentElement.remove()
+    storage.deleteObj(this.parentElement.textContent)
 }
+
+ function deleteTask(e) {
+
+    e.target.parentElement.remove()
+    storage.deleteObjTask(this)
+} 
 
 /* function mainCreator () {
 
@@ -281,4 +259,30 @@ function deleteEl(e) {
     container.appendChild(addTask);
     titleContainer.appendChild(title);
     
+} */
+
+/* function projectElement (e) {
+
+    e.preventDefault();
+    
+    let list = document.createElement("li")
+    let projectEl = document.createElement("div")
+    projectEl.classList.add("project-element")
+    projectEl.addEventListener("click", mainRender)
+
+    let title = document.createElement("p")
+    title.textContent = projectTitle.value
+
+    let deleteProjectBtn = document.createElement("button")
+    deleteProjectBtn.classList.add("delete-project-btn")
+    deleteProjectBtn.addEventListener("click", deleteEl)
+
+
+    projectEl.appendChild(title)
+    projectEl.appendChild(deleteProjectBtn)
+    list.appendChild(projectEl)
+
+    projectList.appendChild(list)
+
+    dialog.close()   
 } */

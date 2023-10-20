@@ -1,14 +1,11 @@
-export {/* storeObj, deleteObj, retrieveObj */ storage}
+export {storage}
 import {methods} from "./to-do.js"
+
 
 let storage = {
      storeObj (obj){
         let objStr = JSON.stringify(obj)
         localStorage.setItem(`${obj.title}`, objStr)
-    },
-    
-    deleteObj (obj) {
-        localStorage.removeItem(`${obj.title}`)
     },
     
     retrieveObj (obj) {
@@ -17,27 +14,36 @@ let storage = {
        Object.assign(objParse, methods )
     
        return objParse
+    },
+
+    deleteObj (obj) {
+        localStorage.removeItem(obj)
+    },
+
+    deleteObjTask (obj) {
+
+        let mainTitle = document.querySelector(".main-title").textContent
+    
+        let project = storage.retrieveObj(mainTitle)
+
+        let index;
+        project.list.forEach((task, i) => {
+            
+            if(task.title === /* e.target.parentElement.textContent */obj.parentElement.textContent){
+               index = i
+            }
+        });
+
+        project.list.splice(index, 1)
+        storage.storeObj(project)   
+    },
+
+    getId (obj) {
+        let project = storage.retrieveObj(obj)
+        let id = project.id
+
+        return id
     }
 }
 
-function listenObj () {
-    window.addEventListener("storage", (e) => {
-        console.log(e)
-    })
-}
 
-/* function storeObj (obj){
-    let objStr = JSON.stringify(obj)
-    localStorage.setItem(`${obj.title}`, objStr)
-}
-
-function deleteObj (obj) {
-    localStorage.removeItem(`${obj.title}`)
-}
-
-function retrieveObj (obj) {
-   let objStr = localStorage.getItem(`${obj.title}`)
-   let objParse = JSON.parse(objStr)
-
-   return objParse
-} */

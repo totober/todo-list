@@ -15,6 +15,10 @@ class Project {
     this.list.push(newTask)
    }
 
+   delete () {
+    storage.deleteObj(this)
+   }
+
 }
 
 
@@ -27,7 +31,9 @@ class Task {
         this.isChecked = isChecked
     }
 
-
+    delete () {
+        storage.deleteObj(this)
+    }
 }
 
 
@@ -36,10 +42,9 @@ let methods = {
     add (newTask) {
         this.list.push(newTask)
     }, 
-   delete: function () {
-    //this.remove()
-    console.log("deleted")
-   },
+    delete () {
+        storage.deleteObj(this)
+    },
    create: function () {
     //this.createProject()
     console.log("created")

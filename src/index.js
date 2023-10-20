@@ -6,48 +6,44 @@ import {taskElement, projectElementCreator, getTaskData, getProjectData} from ".
 
 
 let btnTaskAdd = document.querySelector(".btn-task-add")
-btnTaskAdd.addEventListener("click", test)
+btnTaskAdd.addEventListener("click", taskStorage)
 
 let btnProjectAdd = document.querySelector(".btn-project-add");
-btnProjectAdd.addEventListener("click", test2)
+btnProjectAdd.addEventListener("click", projectStorage)
 
+function projectStorage (e) {
 
-function test2 (e) {
     let title = getProjectData()
-    console.log(title)
+
     let id = localStorage.length
-    console.log(id)
 
-   let prx = new Project(title, id)
+    let project = new Project(title, id)
 
-   storage.storeObj(prx)
+    storage.storeObj(project)
 
-   return prx
 }
 
- function test(e) {
+ function taskStorage(e) {
 
     let mainTitle = document.querySelector(".main-title")
 
     let {title, date} = getTaskData()
 
-
-   let pro = new Task(title, date)
-    console.log(pro)
- 
+    let task = new Task(title, date)
 
   // let retr = storage.retrieveObj(e.target.parentElement.parentElement.parentElement.firstElementChild.textContent)
-  let retr = storage.retrieveObj(mainTitle.textContent)
-    console.log(retr) 
+    let retr = storage.retrieveObj(mainTitle.textContent)
 
-   
-   retr.add(pro)
-
-  
+    retr.add(task)
 
     storage.storeObj(retr)
 
 } 
+
+function deleteEl(e) {
+    e.target.parentElement.remove()
+    storage.deleteObj(e.target.textContent)
+}
 
 
 
