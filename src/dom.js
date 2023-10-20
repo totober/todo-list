@@ -1,4 +1,4 @@
-export {taskElement, projectElementCreator, getProjectData, getTaskData}
+export {taskElementAdded, projectElementCreator, getProjectData, getTaskData}
 
 import { Task } from "./to-do.js"
 import { storage } from "./storage.js"
@@ -21,7 +21,7 @@ let elements = {
         /* createBtn: document.querySelector(".btn-task")
         .addEventListener("click", taskDialog), */
         addBtn: document.querySelector(".btn-task-add")
-        .addEventListener("click", taskElement),
+        .addEventListener("click",  taskElementAdded /* taskRender*/),
         cancelBtn: document.querySelector(".btn-task-cancel")
         .addEventListener("click", taskDialogClose),
         dialog: document.querySelector(".task-dialog"),
@@ -86,7 +86,7 @@ function projectElementCreator (e) {
     let list = document.createElement("li")
     let projectEl = document.createElement("div")
     projectEl.classList.add("project-element")
-    projectEl.addEventListener("click", mainRender)
+    projectEl.addEventListener("click",  mainRender /* taskRender*/)
 
     let title = document.createElement("p")
     title.textContent = getProjectData()
@@ -146,7 +146,20 @@ function mainRender(e){
 
     createTaskBtn.setAttribute("data-id", e.target.textContent)
     //taskContainer.appendChild(mainCreator())
+    taskRender()
+}
 
+function taskRender (e) {
+    
+    let mainTitle = document.querySelector(".main-title").textContent
+    console.log(mainTitle)
+    let proj = storage.retrieveObj(mainTitle)
+    console.log(proj)
+    console.log(proj.list)
+
+    proj.list.forEach(task => {
+        taskElementCreator(task.title, task.date)         
+    }) 
 }
 
 
@@ -162,16 +175,18 @@ function getTaskData (){
 }
 
 
-function taskElement (e) {
-
-    //e.preventDefault()
-
-    /* let taskTitle = document.querySelector(".task-title")
-    let taskDate = document.querySelector(".task-date") */
-    let createTaskBtn = document.querySelector(".create-task-btn")
-    let taskContainer = document.querySelector(".task-container")
+function taskElementAdded (e) {
 
     let {title, date} = getTaskData()
+    taskElementCreator(title, date)
+    
+    elements.task.dialog.close()
+
+}
+
+function taskElementCreator (title, date) {
+
+    let taskContainer = document.querySelector(".task-container")
 
     let taskEl = document.createElement("div")
     taskEl.classList.add("task-element")
@@ -181,11 +196,10 @@ function taskElement (e) {
     check.addEventListener("click", isChecked)
 
     let titleEl = document.createElement("p")
-    titleEl.textContent = /* taskTitle.value */ title
-
+    titleEl.textContent =  title
 
     let dateEl = document.createElement("p")
-    dateEl.textContent = /* taskDate.value */ date
+    dateEl.textContent =  date
 
     let deleteTaskBtn = document.createElement("button")
     deleteTaskBtn.classList.add("delete-task-btn")
@@ -198,9 +212,7 @@ function taskElement (e) {
     //taskContainer.insertBefore(taskEl, createTaskBtn)
     taskContainer.appendChild(taskEl)
 
-    
-
-    elements.task.dialog.close()
+    //elements.task.dialog.close()
 
    // return {title, date}
 }
