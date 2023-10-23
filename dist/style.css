@@ -175,7 +175,7 @@ main {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-areas: 
-        "checkbox title title . . date date . btn";
+        "checkbox title title . . date date priority btn";
     justify-content: start;
     align-items: start;
 }
@@ -214,11 +214,25 @@ main {
     display: inline-block;
 }
 
-.task-element span.checked {
+.task-element span.check {
     background-image: url(../img/check.png);
     background-position: center;
     background-size: contain;
 
+}
+
+.task-element #star-element {
+    grid-area: priority;
+    width: 25px;
+    height: 25px;
+    background-image: url(../img/star\ \(1\).png);
+    background-position: center;
+    background-size: cover;
+    background-color: var(--medium-color);
+}
+
+.task-element #star-element.priority {
+    background-image: url(../img/star.png);
 }
 
 input {

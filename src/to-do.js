@@ -23,7 +23,7 @@ class Project {
 
 
 class Task {
-    constructor(title, date, description, isPriority, isChecked) {
+    constructor(title, date, isChecked = false, isPriority = false, description) {
         this.title = title,
         this.date = date,
         this.description = description,

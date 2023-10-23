@@ -62,7 +62,6 @@ let main = document.querySelector("main")
 let createTaskBtn = document.querySelector(".create-task-btn")
 createTaskBtn.addEventListener("click", taskDialog)
 
-
 function projectDialog(e) {
     projectTitle.value = ""; 
     elements.project.dialog.showModal()
@@ -91,7 +90,7 @@ function projectElementCreator (title) {
     let list = document.createElement("li")
     let projectEl = document.createElement("div")
     projectEl.classList.add("project-element")
-    projectEl.addEventListener("click",  mainRender /* taskRender*/)
+    projectEl.addEventListener("click",  mainRender  /*taskRender*/)
 
     let titleEl = document.createElement("p")
     titleEl.textContent = title
@@ -107,84 +106,44 @@ function projectElementCreator (title) {
     projectList.appendChild(list)    
 }
 
-
-function mainCreator () {
-
-
-    /*   let taskContainer = document.createElement("div");
-    taskContainer.classList.add("task-container");
-    taskContainer.classList.add(e.target.textContent) */
-
-   /*  let createTaskBtn = document.createElement("button")
-            createTaskBtn.classList.add("create-task-btn")
-            
-            createTaskBtn.textContent = "Add task"
-            createTaskBtn.addEventListener("click", taskDialog)
-
-    /* taskContainer.appendChild(createTaskBtn) */
-
-   // return /* taskContainer */ createTaskBtn 
-}
-
 window.addEventListener("load", homeRender)
 
 function homeRender(e) {
-    let projectStorage = localStorage
-    console.log(projectStorage)
-    let projectValues = Object.values(projectStorage)
-    console.log(projectValues)
 
- /*    let keys = Object.keys(projectArray)
-    console.log(keys)
-    let entries = Object.entries(projectArray)
-    console.log(entries)
-    let values = Object.values(projectArray)
-    console.log(values) */
-    
-     let projectArray = []
-    for (let project of projectValues) {
-        
-        projectArray.push(JSON.parse(project))
-
-    }
-    console.log(projectArray) 
+    let projectArray = storage.retrieveProjectsObj()
 
     projectArray.forEach(project => {
         projectElementCreator(project.title)
-    })
+    });
 
 }
 
 
 function mainRender(e){
 
-
     let taskContainer = document.querySelector(".task-container")
-    let createTaskBtn = document.querySelector(".create-task-btn")
 
     taskContainer.innerHTML = "";
 
     let mainTitle = document.querySelector(".main-title")
     mainTitle.textContent = e.target.textContent || "Title";
-    
-    console.log(taskContainer)
 
-    taskContainer.setAttribute("data-id", storage.getId(this.textContent))
-    console.log(this)
-
-    createTaskBtn.setAttribute("data-id", e.target.textContent)
+    let projectId = storage.getProjectId(this.textContent)
+    taskContainer.setAttribute("data-id", projectId )
+    console.log(projectId)
 
     taskRender()
 }
 
-function taskRender (e) {
+function taskRender () {
+    
     
     let mainTitle = document.querySelector(".main-title").textContent
     console.log(mainTitle)
-    let project = storage.retrieveObj(mainTitle)
+    let project = storage.retrieveProject(mainTitle)
 
     project.list.forEach(task => {
-        taskElementCreator(task.title, task.date)         
+        taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)         
     }) 
 }
 
@@ -210,7 +169,7 @@ function taskElementAdded (e) {
 
 }
 
-function taskElementCreator (title, date) {
+function taskElementCreator (title, date, isChecked, isPriority) {
 
     let taskContainer = document.querySelector(".task-container")
 
@@ -219,13 +178,28 @@ function taskElementCreator (title, date) {
 
     let check = document.createElement("span")
     check.classList.add("uncheck")
-    check.addEventListener("click", isChecked)
+    if(isChecked === false) {
+         check.classList.add("uncheck")
+    } else if (isChecked === true) {
+        check.classList.add("check")
+    }
+    check.addEventListener("click", taskChecked)
 
     let titleEl = document.createElement("p")
     titleEl.textContent =  title
 
     let dateEl = document.createElement("p")
     dateEl.textContent =  date
+
+    let priorityEl = document.createElement("div")
+    priorityEl.setAttribute("id", "star-element")
+    priorityEl.className = "not-priority"
+    if (isPriority === false){
+        priorityEl.className = "not-priority"
+    } else if(isPriority === true) {
+        priorityEl.className = "priority"
+    }
+    priorityEl.addEventListener("click", taskPriority)
 
     let deleteTaskBtn = document.createElement("button")
     deleteTaskBtn.classList.add("delete-task-btn")
@@ -234,13 +208,10 @@ function taskElementCreator (title, date) {
     taskEl.appendChild(check)
     taskEl.appendChild(titleEl)
     taskEl.appendChild(dateEl)
+    taskEl.appendChild(priorityEl)
     taskEl.appendChild(deleteTaskBtn)
     //taskContainer.insertBefore(taskEl, createTaskBtn)
     taskContainer.appendChild(taskEl)
-
-    //elements.task.dialog.close()
-
-   // return {title, date}
 }
 
 function taskDialog(e){
@@ -259,12 +230,39 @@ function taskDialogClose (e) {
     elements.task.dialog.close()
 }
 
-function isChecked (e) {
+function taskChecked (e) {
+
+    let {project, returnedTask} = storage.retrieveTask(this)
+
     if(e.target.className === "uncheck") {
-        e.target.className = "checked"
+        e.target.className = "check"
+        returnedTask.isChecked = true
+        storage.storeObj(project)
+
     } else {
         e.target.className = "uncheck"
+        returnedTask.isChecked = false
+        storage.storeObj(project)
+
     }
+    console.log(returnedTask.isChecked)
+    return returnedTask.isChecked
+}
+
+function taskPriority (e) {
+    let {project, returnedTask} = storage.retrieveTask(this)
+
+    if(e.target.className === "priority") {
+        e.target.className = "not-priority"
+        returnedTask.isPriority = false
+        storage.storeObj(project)
+    } else {
+        e.target.className = "priority"
+        returnedTask.isPriority = true
+        storage.storeObj(project)
+    }
+
+    return returnedTask.isPriority
 }
 
 
@@ -272,6 +270,8 @@ function deleteProject(e) {
 
     e.target.parentElement.remove()
     storage.deleteObj(this.parentElement.textContent)
+    storage.uploadProjectId()
+
 }
 
  function deleteTask(e) {
@@ -279,48 +279,3 @@ function deleteProject(e) {
     e.target.parentElement.remove()
     storage.deleteObjTask(this)
 } 
-
-/* function mainCreator () {
-
-    let container = document.createElement("section");
-    let titleContainer = document.createElement("div")
-    let title = document.createElement("h1");
-    let addTask = document.createElement("button")
-
-    container.classList.add("main-container");
-    titleContainer.classList.add("title-container");
-    title.classList.add("title-task");
-    addTask.classList.add("btn-task");
-
-    main.appendChild(container);
-    container.appendChild(titleContainer);
-    container.appendChild(addTask);
-    titleContainer.appendChild(title);
-    
-} */
-
-/* function projectElement (e) {
-
-    e.preventDefault();
-    
-    let list = document.createElement("li")
-    let projectEl = document.createElement("div")
-    projectEl.classList.add("project-element")
-    projectEl.addEventListener("click", mainRender)
-
-    let title = document.createElement("p")
-    title.textContent = projectTitle.value
-
-    let deleteProjectBtn = document.createElement("button")
-    deleteProjectBtn.classList.add("delete-project-btn")
-    deleteProjectBtn.addEventListener("click", deleteEl)
-
-
-    projectEl.appendChild(title)
-    projectEl.appendChild(deleteProjectBtn)
-    list.appendChild(projectEl)
-
-    projectList.appendChild(list)
-
-    dialog.close()   
-} */

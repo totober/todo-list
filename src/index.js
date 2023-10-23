@@ -32,7 +32,7 @@ function projectStorage (e) {
     let task = new Task(title, date)
 
   // let retr = storage.retrieveObj(e.target.parentElement.parentElement.parentElement.firstElementChild.textContent)
-    let retr = storage.retrieveObj(mainTitle.textContent)
+    let retr = storage.retrieveProject(mainTitle.textContent)
 
     retr.add(task)
 

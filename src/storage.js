@@ -8,7 +8,7 @@ let storage = {
         localStorage.setItem(`${obj.title}`, objStr)
     },
     
-    retrieveObj (obj) {
+    retrieveProject (obj) {
        let objStr = localStorage.getItem(obj)
        let objParse = JSON.parse(objStr)
        Object.assign(objParse, methods )
@@ -20,11 +20,29 @@ let storage = {
         localStorage.removeItem(obj)
     },
 
+    retrieveTask(obj){
+
+        let mainTitle = document.querySelector(".main-title").textContent;
+        let project = storage.retrieveProject(mainTitle);
+
+        let returnedTask
+
+        project.list.forEach(task => {
+            if(task.title === /*  obj.nextElementSibling.textContent */ obj.parentElement.firstElementChild.nextElementSibling.textContent){
+               console.log(obj.parentElement.firstElementChild.nextElementSibling.textContent)
+               console.log(obj.nextElementSibling.textContent)
+                returnedTask = task
+            }
+        });
+
+        return {project, returnedTask};
+    },
+
     deleteObjTask (obj) {
 
         let mainTitle = document.querySelector(".main-title").textContent
     
-        let project = storage.retrieveObj(mainTitle)
+        let project = storage.retrieveProject(mainTitle)
 
         let index;
         project.list.forEach((task, i) => {
@@ -38,8 +56,33 @@ let storage = {
         storage.storeObj(project)   
     },
 
-    getId (obj) {
-        let project = storage.retrieveObj(obj)
+    retrieveProjectsObj () {
+        let projectStorage = localStorage;
+        let projectValues = Object.values(projectStorage);
+        
+         let projectArray = [];
+        for (let project of projectValues) {
+            
+            projectArray.push(JSON.parse(project))
+    
+        };
+
+        return projectArray
+    },
+
+    uploadProjectId () {
+        let projectArray = storage.retrieveProjectsObj()
+
+        projectArray.forEach((project, i) => {
+               project.id = i
+               storage.storeObj(project)
+               //console.log(`${project.title} : ${project.id}`)
+           }
+       )
+    },
+
+    getProjectId (obj) {
+        let project = storage.retrieveProject(obj)
         let id = project.id
 
         return id
