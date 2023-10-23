@@ -28,9 +28,7 @@ let storage = {
         let returnedTask
 
         project.list.forEach(task => {
-            if(task.title === /*  obj.nextElementSibling.textContent */ obj.parentElement.firstElementChild.nextElementSibling.textContent){
-               console.log(obj.parentElement.firstElementChild.nextElementSibling.textContent)
-               console.log(obj.nextElementSibling.textContent)
+            if(task.title === obj.parentElement.firstElementChild.nextElementSibling.textContent){
                 returnedTask = task
             }
         });

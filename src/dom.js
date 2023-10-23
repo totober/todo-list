@@ -90,7 +90,7 @@ function projectElementCreator (title) {
     let list = document.createElement("li")
     let projectEl = document.createElement("div")
     projectEl.classList.add("project-element")
-    projectEl.addEventListener("click",  mainRender  /*taskRender*/)
+    projectEl.addEventListener("click",  /* mainRender */  taskRender)
 
     let titleEl = document.createElement("p")
     titleEl.textContent = title
@@ -128,16 +128,15 @@ function mainRender(e){
     let mainTitle = document.querySelector(".main-title")
     mainTitle.textContent = e.target.textContent || "Title";
 
-    let projectId = storage.getProjectId(this.textContent)
-    taskContainer.setAttribute("data-id", projectId )
-    console.log(projectId)
-
-    taskRender()
 }
 
-function taskRender () {
+
+function taskRender (e) {
+
+    mainRender(e)
     
-    
+    let taskContainer = document.querySelector(".task-container")
+
     let mainTitle = document.querySelector(".main-title").textContent
     console.log(mainTitle)
     let project = storage.retrieveProject(mainTitle)
@@ -145,6 +144,9 @@ function taskRender () {
     project.list.forEach(task => {
         taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)         
     }) 
+
+     let projectId = storage.getProjectId(this.textContent)
+    taskContainer.setAttribute("data-id", projectId )
 }
 
 
@@ -279,3 +281,40 @@ function deleteProject(e) {
     e.target.parentElement.remove()
     storage.deleteObjTask(this)
 } 
+
+let sideAllTasks = document.querySelector(".side-all-tasks")
+sideAllTasks.addEventListener("click", allTasks)
+
+function allTasks(e) {
+
+    mainRender(e)
+
+    let projectsObj = storage.retrieveProjectsObj()
+
+    projectsObj.forEach(project => {
+        project.list.forEach(task => {
+            taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)  
+        })
+    } )
+}
+
+let sideNextDays = document.querySelector(".side-next-days")
+sideNextDays.addEventListener("click", nextDays)
+
+function nextDays(e) {
+
+    mainRender(e)
+
+    let projectsObj = storage.retrieveProjectsObj()
+
+    projectsObj.forEach(project => {
+        project.list.filter ( (task) => {
+            let todayDate = new Date()
+            let todayDateTrim = todayDate.toISOString().slice(0, 10)
+            console.log(todayDate)
+            console.log(todayDateTrim)
+            taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)  
+        })
+    } )
+
+}
