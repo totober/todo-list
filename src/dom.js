@@ -1,7 +1,8 @@
-export {taskElementAdded, projectElementCreator, getProjectData, getTaskData}
+export {taskElementAdded, projectElementCreator, getProjectData, getTaskData, mainRender, taskElementCreator, deleteTask}
 
 import { Task } from "./to-do.js"
 import { storage } from "./storage.js"
+import {subDays, addDays, format, parseISO} from "date-fns"
 
 
 let elements = {
@@ -153,25 +154,27 @@ function taskRender (e) {
 function getTaskData (){
    
     let taskDate = document.querySelector(".task-date")
-    let date = taskDate.value
+    let date = taskDate.value 
+    let dateFormat = format(parseISO(date), "dd/MM/yyyy")
+    console.log(dateFormat)
 
     let taskTitle = document.querySelector(".task-title")
     let title = taskTitle.value
 
-    return {title, date}
+    return {title, dateFormat}
 }
 
 
 function taskElementAdded (e) {
 
-    let {title, date} = getTaskData()
-    taskElementCreator(title, date)
+    let {title, dateFormat} = getTaskData()
+    taskElementCreator(title, dateFormat)
     
     elements.task.dialog.close()
 
 }
 
-function taskElementCreator (title, date, isChecked, isPriority) {
+function taskElementCreator (title, dateFormat, isChecked, isPriority) {
 
     let taskContainer = document.querySelector(".task-container")
 
@@ -191,7 +194,7 @@ function taskElementCreator (title, date, isChecked, isPriority) {
     titleEl.textContent =  title
 
     let dateEl = document.createElement("p")
-    dateEl.textContent =  date
+    dateEl.textContent =  dateFormat
 
     let priorityEl = document.createElement("div")
     priorityEl.setAttribute("id", "star-element")
@@ -280,41 +283,23 @@ function deleteProject(e) {
 
     e.target.parentElement.remove()
     storage.deleteObjTask(this)
+
+  let ave = getProjectIdFromTask(this.parentElement.firstElementChild.nextElementSibling.textContent)
+    
+    console.log(ave)
 } 
 
-let sideAllTasks = document.querySelector(".side-all-tasks")
-sideAllTasks.addEventListener("click", allTasks)
-
-function allTasks(e) {
-
-    mainRender(e)
+function getProjectIdFromTask(targetTask) {
 
     let projectsObj = storage.retrieveProjectsObj()
 
+    let which
     projectsObj.forEach(project => {
-        project.list.forEach(task => {
-            taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)  
+        project.list.forEach ((task) => {
+            if(task === targetTask) {
+                which = project.title
+            }
         })
-    } )
-}
-
-let sideNextDays = document.querySelector(".side-next-days")
-sideNextDays.addEventListener("click", nextDays)
-
-function nextDays(e) {
-
-    mainRender(e)
-
-    let projectsObj = storage.retrieveProjectsObj()
-
-    projectsObj.forEach(project => {
-        project.list.filter ( (task) => {
-            let todayDate = new Date()
-            let todayDateTrim = todayDate.toISOString().slice(0, 10)
-            console.log(todayDate)
-            console.log(todayDateTrim)
-            taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)  
-        })
-    } )
-
+})
+return which
 }

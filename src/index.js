@@ -2,6 +2,7 @@ import {Project, Task, methods} from "./to-do.js"
 import {storage} from "./storage.js"
 import {taskElement, projectElementCreator, getTaskData, getProjectData} from "./dom.js"
 
+require("./aside.js")
 
 
 
@@ -27,9 +28,9 @@ function projectStorage (e) {
 
     let mainTitle = document.querySelector(".main-title")
 
-    let {title, date} = getTaskData()
+    let {title, dateFormat} = getTaskData()
 
-    let task = new Task(title, date)
+    let task = new Task(title, dateFormat)
 
   // let retr = storage.retrieveObj(e.target.parentElement.parentElement.parentElement.firstElementChild.textContent)
     let retr = storage.retrieveProject(mainTitle.textContent)

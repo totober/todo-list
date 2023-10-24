@@ -87,4 +87,14 @@ let storage = {
     }
 }
 
+function getProjectIdFromTask(targetTask) {
+    projectsObj.forEach(project => {
+        project.list.forEach ((task) => {
+            if(task === targetTask) {
+                return project
+            }
+        })
+})
+}
+
 
