@@ -87,6 +87,8 @@ function projectElementAdded (e) {
 
 
 function projectElementCreator (title) {
+
+    let taskContainer = document.querySelector(".task-container")
     
     let list = document.createElement("li")
     let projectEl = document.createElement("div")
@@ -100,11 +102,11 @@ function projectElementCreator (title) {
     deleteProjectBtn.classList.add("delete-project-btn")
     deleteProjectBtn.addEventListener("click", deleteProject)
 
-
     projectEl.appendChild(titleEl)
     projectEl.appendChild(deleteProjectBtn)
     list.appendChild(projectEl)
-    projectList.appendChild(list)    
+    projectList.appendChild(list) 
+    
 }
 
 window.addEventListener("load", homeRender)
@@ -127,27 +129,31 @@ function mainRender(e){
     taskContainer.innerHTML = "";
 
     let mainTitle = document.querySelector(".main-title")
-    mainTitle.textContent = e.target.textContent || "Title";
+    mainTitle.textContent = e.target.textContent || "Please, create or select a project";
 
 }
 
 
 function taskRender (e) {
+    console.log(this)
+    console.log(this.textContent)
 
     mainRender(e)
     
     let taskContainer = document.querySelector(".task-container")
 
-    let mainTitle = document.querySelector(".main-title").textContent
-    console.log(mainTitle)
-    let project = storage.retrieveProject(mainTitle)
+    //let mainTitle = document.querySelector(".main-title").textContent
+    //console.log(mainTitle)
+    //let project = storage.retrieveProject(mainTitle)
+    let project = storage.retrieveProject(this.textContent)
 
     project.list.forEach(task => {
         taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)         
     }) 
 
-     let projectId = storage.getProjectId(this.textContent)
+    let projectId = storage.getProjectId(this.textContent)
     taskContainer.setAttribute("data-id", projectId )
+  
 }
 
 
@@ -167,6 +173,8 @@ function getTaskData (){
 
 function taskElementAdded (e) {
 
+    //let mainTitle = document.querySelector(".main-title").textContent
+
     let {title, dateFormat} = getTaskData()
     taskElementCreator(title, dateFormat)
     
@@ -177,9 +185,11 @@ function taskElementAdded (e) {
 function taskElementCreator (title, dateFormat, isChecked, isPriority) {
 
     let taskContainer = document.querySelector(".task-container")
+    //let taskContainerId = taskContainer.getAttribute("data-id")
 
     let taskEl = document.createElement("div")
     taskEl.classList.add("task-element")
+   // taskEl.setAttribute("data-id", taskContainerId)
 
     let check = document.createElement("span")
     check.classList.add("uncheck")
@@ -237,17 +247,17 @@ function taskDialogClose (e) {
 
 function taskChecked (e) {
 
-    let {project, returnedTask} = storage.retrieveTask(this)
+    let {returnedProject, returnedTask} = storage.retrieveTask(this)
 
     if(e.target.className === "uncheck") {
         e.target.className = "check"
         returnedTask.isChecked = true
-        storage.storeObj(project)
+        storage.storeObj(returnedProject)
 
     } else {
         e.target.className = "uncheck"
         returnedTask.isChecked = false
-        storage.storeObj(project)
+        storage.storeObj(returnedProject)
 
     }
     console.log(returnedTask.isChecked)
@@ -255,16 +265,17 @@ function taskChecked (e) {
 }
 
 function taskPriority (e) {
-    let {project, returnedTask} = storage.retrieveTask(this)
+    let {returnedProject, returnedTask} = storage.retrieveTask(this)
+    console.log(this)
 
     if(e.target.className === "priority") {
         e.target.className = "not-priority"
         returnedTask.isPriority = false
-        storage.storeObj(project)
+        storage.storeObj(returnedProject)
     } else {
         e.target.className = "priority"
         returnedTask.isPriority = true
-        storage.storeObj(project)
+        storage.storeObj(returnedProject)
     }
 
     return returnedTask.isPriority
@@ -283,23 +294,20 @@ function deleteProject(e) {
 
     e.target.parentElement.remove()
     storage.deleteObjTask(this)
-
-  let ave = getProjectIdFromTask(this.parentElement.firstElementChild.nextElementSibling.textContent)
-    
-    console.log(ave)
 } 
 
-function getProjectIdFromTask(targetTask) {
+function btnHide () {
 
-    let projectsObj = storage.retrieveProjectsObj()
+    let createTaskBtn = document.querySelector(".create-task-btn")
+    let side = document.querySelectorAll(".side")
+    console.log(side)
+    let sideArr = Array.from(side)
+    console.log(sideArr)
+    let main = document.querySelector("main")
+    console.log(main)
 
-    let which
-    projectsObj.forEach(project => {
-        project.list.forEach ((task) => {
-            if(task === targetTask) {
-                which = project.title
-            }
-        })
-})
-return which
+    if(createTaskBtn.classList.contains("hidden")){
+        createTaskBtn.classList.toggle("hidden")
+    } 
 }
+

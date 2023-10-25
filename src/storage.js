@@ -22,36 +22,47 @@ let storage = {
 
     retrieveTask(obj){
 
-        let mainTitle = document.querySelector(".main-title").textContent;
-        let project = storage.retrieveProject(mainTitle);
+        /* let mainTitle = document.querySelector(".main-title").textContent;
+        let project = storage.retrieveProject(mainTitle); */
 
         let returnedTask
+        let returnedProject
 
+        let projectArray = storage.retrieveProjectsObj()
+
+        projectArray.forEach(project => {
         project.list.forEach(task => {
             if(task.title === obj.parentElement.firstElementChild.nextElementSibling.textContent){
                 returnedTask = task
+                console.log(returnedTask)
+                returnedProject = project
+                console.log(returnedProject)
             }
-        });
+        })
+    });
 
-        return {project, returnedTask};
+        return {returnedProject, returnedTask};
     },
 
     deleteObjTask (obj) {
 
-        let mainTitle = document.querySelector(".main-title").textContent
-    
-        let project = storage.retrieveProject(mainTitle)
+        let taskDelete = obj.parentElement.firstElementChild.nextElementSibling.textContent
+       // let index
 
-        let index;
-        project.list.forEach((task, i) => {
+        let projectArray = storage.retrieveProjectsObj()
+        projectArray.forEach(project => {
+            project.list.forEach((task, i) =>{
+                if(task.title === taskDelete) {
+                    let index = i
+                    console.log(index)
+                    project.list.splice(index, 1)
+                    storage.storeObj(project)
+
+                }
+                
+            })
             
-            if(task.title === /* e.target.parentElement.textContent */obj.parentElement.textContent){
-               index = i
-            }
-        });
-
-        project.list.splice(index, 1)
-        storage.storeObj(project)   
+        })  
     },
 
     retrieveProjectsObj () {
@@ -70,11 +81,12 @@ let storage = {
 
     uploadProjectId () {
         let projectArray = storage.retrieveProjectsObj()
-
         projectArray.forEach((project, i) => {
                project.id = i
-               storage.storeObj(project)
-               //console.log(`${project.title} : ${project.id}`)
+               project.list.forEach(task => {
+                task.id = i
+                storage.storeObj(project)
+               })
            }
        )
     },
@@ -87,14 +99,5 @@ let storage = {
     }
 }
 
-function getProjectIdFromTask(targetTask) {
-    projectsObj.forEach(project => {
-        project.list.forEach ((task) => {
-            if(task === targetTask) {
-                return project
-            }
-        })
-})
-}
 
 

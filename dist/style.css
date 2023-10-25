@@ -166,6 +166,10 @@ main {
     flex-direction: row;
 }
 
+.create-task-btn.hidden {
+    display: none;
+}
+
 .task-element{
     transition: ease-in-out 0.25s;
     padding: 5px;

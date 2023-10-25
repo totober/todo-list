@@ -27,10 +27,12 @@ function projectStorage (e) {
  function taskStorage(e) {
 
     let mainTitle = document.querySelector(".main-title")
+    let createTaskBtn = document.querySelector(".create-task-btn")
+    let btnAttr = createTaskBtn.getAttribute("data-id")
 
     let {title, dateFormat} = getTaskData()
 
-    let task = new Task(title, dateFormat)
+    let task = new Task(title, dateFormat, btnAttr)
 
   // let retr = storage.retrieveObj(e.target.parentElement.parentElement.parentElement.firstElementChild.textContent)
     let retr = storage.retrieveProject(mainTitle.textContent)
