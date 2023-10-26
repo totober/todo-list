@@ -145,6 +145,15 @@ main {
     gap: 10px;
 }
 
+.main-title {
+    padding: 30px;
+    background-color: var(--light-color);
+    border-radius: 5px;
+    font-size: 28px;
+    margin-top: -8px;
+
+}
+
 .task-container {
     display: flex;
     flex-direction: column;
@@ -166,7 +175,7 @@ main {
     flex-direction: row;
 }
 
-.create-task-btn.hidden {
+#create-task-btn.hidden {
     display: none;
 }
 
@@ -179,7 +188,7 @@ main {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-areas: 
-        "checkbox title title . . date date priority btn";
+        "checkbox title title . date date priority edit btn";
     justify-content: start;
     align-items: start;
 }
@@ -237,6 +246,10 @@ main {
 
 .task-element #star-element.priority {
     background-image: url(../img/star.png);
+}
+
+.task-element .edit-task {
+    grid-area: edit;
 }
 
 input {

@@ -1,51 +1,42 @@
-import {Project, Task, methods} from "./to-do.js"
-import {storage} from "./storage.js"
-import {taskElement, projectElementCreator, getTaskData, getProjectData} from "./dom.js"
+import {Project, Task, methods} from "./to-do.js";
+import {storage} from "./storage.js";
+import {taskElement, projectElementCreator, getTaskData, getProjectData} from "./dom.js";
 
-require("./aside.js")
+require("./aside.js");
 
 
+let btnProjectAdd = document.querySelector(".btn-project-add").addEventListener("click", projectStorage);
+let btnTaskAdd = document.querySelector(".btn-task-add").addEventListener("click", taskStorage);
 
-let btnTaskAdd = document.querySelector(".btn-task-add")
-btnTaskAdd.addEventListener("click", taskStorage)
-
-let btnProjectAdd = document.querySelector(".btn-project-add");
-btnProjectAdd.addEventListener("click", projectStorage)
 
 function projectStorage (e) {
 
-    let title = getProjectData()
+    let title = getProjectData();
 
-    let id = localStorage.length
+    let id = localStorage.length;
 
-    let project = new Project(title, id)
+    let project = new Project(title, id);
 
-    storage.storeObj(project)
-
-}
+    storage.storeObj(project);
+};
 
  function taskStorage(e) {
 
-    let mainTitle = document.querySelector(".main-title")
-    let taskContainerAttr = document.querySelector(".task-container").getAttribute("data-id")
+    let mainTitle = document.querySelector(".main-title");
+    let taskContainerAttr = document.querySelector(".task-container").getAttribute("data-id");
 
 
-    let {title, dateFormat} = getTaskData()
+    let {title, dateFormat} = getTaskData();
 
-    let task = new Task(title, dateFormat, taskContainerAttr)
+    let task = new Task(title, dateFormat, taskContainerAttr);
 
-    let retr = storage.retrieveProject(mainTitle.textContent)
+    let retr = storage.retrieveProject(mainTitle.textContent);
 
-    retr.add(task)
+    retr.add(task);
 
-    storage.storeObj(retr)
+    storage.storeObj(retr);
+}; 
 
-} 
-
-/* function deleteEl(e) {
-    e.target.parentElement.remove()
-    storage.deleteObj(e.target.textContent)
-} */
 
 
 

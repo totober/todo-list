@@ -1,8 +1,8 @@
-import {storage} from "./storage.js"
-import { projectElementCreator, getProjectData } from "./dom.js"
-import {format} from "date-fns"
+import {storage} from "./storage.js";
+import { projectElementCreator, getProjectData } from "./dom.js";
+import {format} from "date-fns";
 
-export {Project, Task, methods}
+export {Project, Task, methods};
 
 class Project {
 
@@ -20,8 +20,7 @@ class Project {
     storage.deleteObj(this)
    }
 
-}
-
+};
 
 class Task {
     constructor(title, date, id, isChecked = false, isPriority = false) {
@@ -35,8 +34,7 @@ class Task {
     delete () {
         storage.deleteObj(this)
     }
-}
-
+};
 
 let methods = {
 
@@ -45,8 +43,5 @@ let methods = {
     }, 
     delete () {
         storage.deleteObj(this)
-    },
-}
-
-
-
+    }
+};

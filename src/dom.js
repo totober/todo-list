@@ -44,6 +44,7 @@ createTaskBtn.addEventListener("click", taskDialog);
 let taskContainer = document.querySelector(".task-container");
 
 
+
 /// PROJECTS ///
 
 function projectDialog(e) {
@@ -97,14 +98,13 @@ function sideRender(e) {
 
 function mainRender(e){
 
-    //let taskContainer = document.querySelector(".task-container")
-
     taskContainer.innerHTML = "";
 
     let mainTitle = document.querySelector(".main-title");
     mainTitle.textContent = e.target.textContent || "Please, create or select a project";
-
 };
+
+/// TASKS ///
 
 function taskRender (e) {
 
@@ -181,11 +181,16 @@ function taskElementCreator (title, dateFormat, isChecked, isPriority) {
     priorityEl.setAttribute("id", "star-element");
     priorityEl.className = "not-priority";
     if (isPriority === false){
-        priorityEl.className = "not-priority"
+        priorityEl.className = "not-priority";
     } else if(isPriority === true) {
-        priorityEl.className = "priority"
+        priorityEl.className = "priority";
     };
     priorityEl.addEventListener("click", taskPriority);
+
+    let editEl = document.createElement("div");
+    editEl.classList.add("edit-task")
+    //editEl.addEventListener("click", openEditDialog) stand by upgrade elements
+    //editEl.addEventListener("click", getEditObject) stand by upgrade elements
 
     let deleteTaskBtn = document.createElement("button");
     deleteTaskBtn.classList.add("delete-task-btn");
@@ -195,6 +200,7 @@ function taskElementCreator (title, dateFormat, isChecked, isPriority) {
     taskEl.appendChild(titleEl);
     taskEl.appendChild(dateEl);
     taskEl.appendChild(priorityEl);
+    taskEl.appendChild(editEl);
     taskEl.appendChild(deleteTaskBtn);
     taskContainer.appendChild(taskEl);
 };
@@ -256,15 +262,91 @@ function deleteProject(e) {
 
     // cant make it work...
      if(!createTaskBtn.classList.contains("hidden")){
-        createTaskBtn.className = "hidden"
-        console.log("piolache")
+        createTaskBtn.classList.toggle("hidden")
     } 
 
 };
 
- function deleteTask(e) {
+function deleteTask(e) {
 
     e.target.parentElement.remove();
     storage.deleteObjTask(this);
 };
+
+
+
+//// UPDATE ELEMENTS IN STAND BY ////
+
+/* 
+let editDialog = document.querySelector(".edit-dialog")
+
+let btnEditAdd = document.querySelector(".btn-edit-add")
+btnEditAdd.addEventListener("click", updateData)
+
+let btnEditCancel = document.querySelector(".btn-edit-cancel")
+btnEditCancel.addEventListener("click", closeEditDialog )
+
+
+
+function openEditDialog(e) {
+  editDialog.showModal();
+}
+
+function closeEditDialog(e){
+    editDialog.close()
+}
+
+function getEditData () {
+    let editTitle = document.querySelector(".edit-title")
+    console.log(editTitle)
+    let title = editTitle.textContent
+    console.log(title)
+
+    let editDate = document.querySelector("edit-date")
+    console.log(editDate)
+    let date = editDate.value; 
+    console.log(date)
+    let dateFormat = format(parseISO(date), "dd/MM/yyyy");
+    console.log(dateFormat)
+
+    return {title, dateFormat}
+}
+
+function getEditObject (e) {
+    //console.log(this)
+    //console.log(this.parentElement.firstElementChild.nextElementSibling.textContent)
+
+    let {returnedProject, returnedTask, returnedTaskId} = storage.retrieveTask(this)
+     
+   return {returnedProject, returnedTask, returnedTaskId}
+}
+
+function updateData (e) {
+
+    console.log(this)
+   let taskEl = this.parentElement.firstElementChild.nextElementSibling.textContent
+   console.log(taskEl)
+   let {returnedProject, returnedTask, returnedTaskId} = getEditObject()
+   console.log(returnedProject)
+   console.log(returnedTask)
+   console.log(returnedTaskId)
+
+  // let {title, dateFormat} = getEditData()
+
+
+   returnedTask.title = title
+   returnedTask.date = dateFormat  
+
+  // storeObj(returnedProject)
+
+
+
+  closeEditDialog()
+}
+
+function elementUpdated() {
+    console.log("wisconsin")
+
+    closeEditDialog()
+} */
 
