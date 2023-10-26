@@ -3,11 +3,20 @@ import {mainRender, taskElementCreator, deleteTask} from "./dom.js"
 import {addDays, format, parseISO, parse} from "date-fns"
 
 
-let sideAllTasks = document.querySelector(".all-tasks")
-sideAllTasks.addEventListener("click", allTasks)
+let sideElements = {
+    sideAllTasks: document.querySelector(".all-tasks")
+    .addEventListener("click", allTasks),
+    sideNextDays: document.querySelector(".next-days")
+    .addEventListener("click", nextDays),
+    sideToday: document.querySelector(".today").addEventListener("click", today),
+    sideMonth: document.querySelector(".month").addEventListener("click", month),
+    sidePriority: document.querySelector(".priority").addEventListener("click", priority),
+    sideArr: Array.from(document.querySelectorAll(".side"))
+    .forEach(element => element.addEventListener("click", hideBtn)),
+    createTaskBtn: document.querySelector("#create-task-btn")
+};
 
 function allTasks(e) {
-
 
     mainRender(e)
 
@@ -19,10 +28,6 @@ function allTasks(e) {
         })
     } )
 }
-
-
-let sideNextDays = document.querySelector(".next-days")
-sideNextDays.addEventListener("click", nextDays)
 
 function nextDays(e) {
  
@@ -45,8 +50,6 @@ function nextDays(e) {
     } )
 }
 
-let sideToday = document.querySelector(".today").addEventListener("click", today)
-
 function today (e) {
 
     mainRender(e)
@@ -68,9 +71,8 @@ function today (e) {
     } )
 } 
 
-let sideMonth = document.querySelector(".month").addEventListener("click", month)
-
 function month (e) {
+
     mainRender(e)
 
     let projectsObj = storage.retrieveProjectsObj()
@@ -92,9 +94,6 @@ function month (e) {
     } )
 }
 
-let sidePriority = document.querySelector(".priority").addEventListener("click", priority)
-
-
 function priority(e) {
 
     mainRender(e)
@@ -109,4 +108,10 @@ function priority(e) {
             }
         })
     } )
+}
+
+function hideBtn (e) {
+    if(!sideElements.createTaskBtn.classList.contains("hidden")){
+        sideElements.createTaskBtn.classList.toggle("hidden")
+    } 
 }

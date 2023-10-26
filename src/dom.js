@@ -1,8 +1,9 @@
-export {taskElementAdded, projectElementCreator, getProjectData, getTaskData, mainRender, taskElementCreator, deleteTask}
+export {taskElementAdded, projectElementCreator, getProjectData, getTaskData, mainRender, 
+        taskElementCreator, deleteTask};
 
-import { Task } from "./to-do.js"
-import { storage } from "./storage.js"
-import {subDays, addDays, format, parseISO} from "date-fns"
+import { Task } from "./to-do.js";
+import { storage } from "./storage.js";
+import {subDays, addDays, format, parseISO} from "date-fns";
 
 
 let elements = {
@@ -30,284 +31,240 @@ let elements = {
         title: document.querySelector(".task-title"),
         check: document.querySelector("span")
     }
-}
+};
 
-/* let btnProject = document.querySelector(".btn-project") // createBtn
-let dialog = document.querySelector(".project-dialog") // dialog
-//btnProject.addEventListener("click", projectDialog)
-//elements.project.createBtn.addEventListener("click", projectDialog)*/
+let projectList = document.querySelector(".project-list");
+let projectTitle = document.querySelector(".project-title");
+projectTitle.addEventListener("input", getProjectData);
+window.addEventListener("load", sideRender);
 
-let projectList = document.querySelector(".project-list") //list
-let projectTitle = document.querySelector(".project-title") // title
-projectTitle.addEventListener("input", getProjectData)
+let main = document.querySelector("main");
+let createTaskBtn = document.querySelector("#create-task-btn");
+createTaskBtn.addEventListener("click", taskDialog);
+let taskContainer = document.querySelector(".task-container");
 
-/* let btnProjectAdd = document.querySelector(".btn-project-add") //addBtn
-btnProjectAdd.addEventListener("click", projectElementCreator)
 
-let btnProjectCancel = document.querySelector(".btn-project-cancel") //cancelBtn
-btnProjectCancel.addEventListener("click", projectDialogClose)
-
-let btnTask = document.querySelector(".btn-task") // createBtn
-let dialog2 = document.querySelector(".task-dialog") // dialog
-//btnTask.addEventListener("click", taskDialog)
-elements.task.createBtn.addEventListener("click", taskDialog)
-
-let btnTaskAdd = document.querySelector(".btn-task-add") //addBtn
-btnTaskAdd.addEventListener("click", taskElement)
-let btnTaskCancel = document.querySelector(".btn-task-cancel") //cancelBtn
-btnTaskCancel.addEventListener("click", taskDialogClose)  */
-
-//let btnTask = document.querySelector(".btn-task")
-
-let main = document.querySelector("main")
-let createTaskBtn = document.querySelector(".create-task-btn")
-createTaskBtn.addEventListener("click", taskDialog)
+/// PROJECTS ///
 
 function projectDialog(e) {
     projectTitle.value = ""; 
-    elements.project.dialog.showModal()
-}
+    elements.project.dialog.showModal();
+};
 
 function projectDialogClose(e) {
-    e.preventDefault()
-    elements.project.dialog.close()
-}
+    e.preventDefault();
+    elements.project.dialog.close();
+};
 
 function getProjectData(e) {
-    let titleName = projectTitle.value
+    let titleName = projectTitle.value;
     return titleName
-}
+};
 
 function projectElementAdded (e) {
 
-    projectElementCreator(getProjectData())
-
-    elements.project.dialog.close()
-}
-
+    projectElementCreator(getProjectData());
+    elements.project.dialog.close();
+};
 
 function projectElementCreator (title) {
-
-    let taskContainer = document.querySelector(".task-container")
     
-    let list = document.createElement("li")
-    let projectEl = document.createElement("div")
-    projectEl.classList.add("project-element")
-    projectEl.addEventListener("click",  /* mainRender */  taskRender)
+    let list = document.createElement("li");
+    let projectEl = document.createElement("div");
+    projectEl.classList.add("project-element");
+    projectEl.addEventListener("click", taskRender);
 
-    let titleEl = document.createElement("p")
-    titleEl.textContent = title
+    let titleEl = document.createElement("p");
+    titleEl.textContent = title;
 
-    let deleteProjectBtn = document.createElement("button")
-    deleteProjectBtn.classList.add("delete-project-btn")
-    deleteProjectBtn.addEventListener("click", deleteProject)
+    let deleteProjectBtn = document.createElement("button");
+    deleteProjectBtn.classList.add("delete-project-btn");
+    deleteProjectBtn.addEventListener("click", deleteProject);
 
-    projectEl.appendChild(titleEl)
-    projectEl.appendChild(deleteProjectBtn)
-    list.appendChild(projectEl)
-    projectList.appendChild(list) 
-    
-}
+    projectEl.appendChild(titleEl);
+    projectEl.appendChild(deleteProjectBtn);
+    list.appendChild(projectEl);
+    projectList.appendChild(list);   
+};
 
-window.addEventListener("load", homeRender)
+function sideRender(e) {
 
-function homeRender(e) {
-
-    let projectArray = storage.retrieveProjectsObj()
-
+    let projectArray = storage.retrieveProjectsObj();
     projectArray.forEach(project => {
         projectElementCreator(project.title)
     });
-
-}
-
+};
 
 function mainRender(e){
 
-    let taskContainer = document.querySelector(".task-container")
+    //let taskContainer = document.querySelector(".task-container")
 
     taskContainer.innerHTML = "";
 
-    let mainTitle = document.querySelector(".main-title")
+    let mainTitle = document.querySelector(".main-title");
     mainTitle.textContent = e.target.textContent || "Please, create or select a project";
 
-}
-
+};
 
 function taskRender (e) {
-    console.log(this)
-    console.log(this.textContent)
 
-    mainRender(e)
-    
-    let taskContainer = document.querySelector(".task-container")
+    mainRender(e);
+
+    // show add task button //
+    if(createTaskBtn.classList.contains("hidden")){
+        createTaskBtn.classList.toggle("hidden")
+    }
+    //let taskContainer = document.querySelector(".task-container")
 
     //let mainTitle = document.querySelector(".main-title").textContent
     //console.log(mainTitle)
     //let project = storage.retrieveProject(mainTitle)
-    let project = storage.retrieveProject(this.textContent)
+    let project = storage.retrieveProject(this.textContent);
 
     project.list.forEach(task => {
         taskElementCreator(task.title, task.date, task.isChecked, task.isPriority)         
-    }) 
+    });
 
-    let projectId = storage.getProjectId(this.textContent)
-    taskContainer.setAttribute("data-id", projectId )
+    let projectId = storage.getProjectId(this.textContent);
+    taskContainer.setAttribute("data-id", projectId );
   
 }
 
-
 function getTaskData (){
    
-    let taskDate = document.querySelector(".task-date")
-    let date = taskDate.value 
-    let dateFormat = format(parseISO(date), "dd/MM/yyyy")
-    console.log(dateFormat)
+    let taskDate = document.querySelector(".task-date");
+    let date = taskDate.value; 
+    let dateFormat = format(parseISO(date), "dd/MM/yyyy");
 
-    let taskTitle = document.querySelector(".task-title")
-    let title = taskTitle.value
+    let taskTitle = document.querySelector(".task-title");
+    let title = taskTitle.value;
 
     return {title, dateFormat}
-}
-
+};
 
 function taskElementAdded (e) {
 
     //let mainTitle = document.querySelector(".main-title").textContent
 
-    let {title, dateFormat} = getTaskData()
-    taskElementCreator(title, dateFormat)
+    let {title, dateFormat} = getTaskData();
+    taskElementCreator(title, dateFormat);
     
-    elements.task.dialog.close()
+    elements.task.dialog.close();
 
-}
+};
 
 function taskElementCreator (title, dateFormat, isChecked, isPriority) {
 
-    let taskContainer = document.querySelector(".task-container")
+    //let taskContainer = document.querySelector(".task-container")
     //let taskContainerId = taskContainer.getAttribute("data-id")
 
-    let taskEl = document.createElement("div")
-    taskEl.classList.add("task-element")
+    let taskEl = document.createElement("div");
+    taskEl.classList.add("task-element");
    // taskEl.setAttribute("data-id", taskContainerId)
 
-    let check = document.createElement("span")
-    check.classList.add("uncheck")
+    let check = document.createElement("span");
+    check.classList.add("uncheck");
     if(isChecked === false) {
          check.classList.add("uncheck")
     } else if (isChecked === true) {
         check.classList.add("check")
-    }
-    check.addEventListener("click", taskChecked)
+    };
+    check.addEventListener("click", taskChecked);
 
-    let titleEl = document.createElement("p")
-    titleEl.textContent =  title
+    let titleEl = document.createElement("p");
+    titleEl.textContent =  title;
 
-    let dateEl = document.createElement("p")
-    dateEl.textContent =  dateFormat
+    let dateEl = document.createElement("p");
+    dateEl.textContent =  dateFormat;
 
-    let priorityEl = document.createElement("div")
-    priorityEl.setAttribute("id", "star-element")
-    priorityEl.className = "not-priority"
+    let priorityEl = document.createElement("div");
+    priorityEl.setAttribute("id", "star-element");
+    priorityEl.className = "not-priority";
     if (isPriority === false){
         priorityEl.className = "not-priority"
     } else if(isPriority === true) {
         priorityEl.className = "priority"
-    }
-    priorityEl.addEventListener("click", taskPriority)
+    };
+    priorityEl.addEventListener("click", taskPriority);
 
-    let deleteTaskBtn = document.createElement("button")
-    deleteTaskBtn.classList.add("delete-task-btn")
-    deleteTaskBtn.addEventListener("click", deleteTask)
+    let deleteTaskBtn = document.createElement("button");
+    deleteTaskBtn.classList.add("delete-task-btn");
+    deleteTaskBtn.addEventListener("click", deleteTask);
 
-    taskEl.appendChild(check)
-    taskEl.appendChild(titleEl)
-    taskEl.appendChild(dateEl)
-    taskEl.appendChild(priorityEl)
-    taskEl.appendChild(deleteTaskBtn)
-    //taskContainer.insertBefore(taskEl, createTaskBtn)
-    taskContainer.appendChild(taskEl)
-}
+    taskEl.appendChild(check);
+    taskEl.appendChild(titleEl);
+    taskEl.appendChild(dateEl);
+    taskEl.appendChild(priorityEl);
+    taskEl.appendChild(deleteTaskBtn);
+    taskContainer.appendChild(taskEl);
+};
 
 function taskDialog(e){
 
-    let taskTitle = document.querySelector(".task-title")
-    taskTitle.value = ""
-    let taskDate = document.querySelector(".task-date")
-    taskDate.value = ""
-    let taskNotes = document.querySelector(".task-notes")
-    taskNotes.value = ""
-    elements.task.dialog.showModal()
-}
+    let taskTitle = document.querySelector(".task-title");
+    taskTitle.value = "";
+    let taskDate = document.querySelector(".task-date");
+    taskDate.value = "";
+    let taskNotes = document.querySelector(".task-notes");
+    taskNotes.value = "";
+    elements.task.dialog.showModal();
+};
 
 function taskDialogClose (e) {
-    e.preventDefault()
-    elements.task.dialog.close()
-}
+    e.preventDefault();
+    elements.task.dialog.close();
+};
 
 function taskChecked (e) {
 
-    let {returnedProject, returnedTask} = storage.retrieveTask(this)
+    let {returnedProject, returnedTask} = storage.retrieveTask(this);
 
     if(e.target.className === "uncheck") {
-        e.target.className = "check"
-        returnedTask.isChecked = true
-        storage.storeObj(returnedProject)
-
+        e.target.className = "check";
+        returnedTask.isChecked = true;
+        storage.storeObj(returnedProject);
     } else {
-        e.target.className = "uncheck"
-        returnedTask.isChecked = false
-        storage.storeObj(returnedProject)
+        e.target.className = "uncheck";
+        returnedTask.isChecked = false;
+        storage.storeObj(returnedProject);
+    };
 
-    }
-    console.log(returnedTask.isChecked)
-    return returnedTask.isChecked
-}
+    //return returnedTask.isChecked
+};
 
 function taskPriority (e) {
-    let {returnedProject, returnedTask} = storage.retrieveTask(this)
-    console.log(this)
+    let {returnedProject, returnedTask} = storage.retrieveTask(this);
 
     if(e.target.className === "priority") {
-        e.target.className = "not-priority"
-        returnedTask.isPriority = false
-        storage.storeObj(returnedProject)
+        e.target.className = "not-priority";
+        returnedTask.isPriority = false;
+        storage.storeObj(returnedProject);
     } else {
-        e.target.className = "priority"
-        returnedTask.isPriority = true
-        storage.storeObj(returnedProject)
-    }
+        e.target.className = "priority";
+        returnedTask.isPriority = true;
+        storage.storeObj(returnedProject);
+    };
 
-    return returnedTask.isPriority
-}
-
+    //return returnedTask.isPriority
+};
 
 function deleteProject(e) {
+    
+    e.target.parentElement.remove();
+    storage.deleteObj(this.parentElement.textContent);
+    storage.uploadProjectId();
 
-    e.target.parentElement.remove()
-    storage.deleteObj(this.parentElement.textContent)
-    storage.uploadProjectId()
+    // cant make it work...
+     if(!createTaskBtn.classList.contains("hidden")){
+        createTaskBtn.className = "hidden"
+        console.log("piolache")
+    } 
 
-}
+};
 
  function deleteTask(e) {
 
-    e.target.parentElement.remove()
-    storage.deleteObjTask(this)
-} 
-
-function btnHide () {
-
-    let createTaskBtn = document.querySelector(".create-task-btn")
-    let side = document.querySelectorAll(".side")
-    console.log(side)
-    let sideArr = Array.from(side)
-    console.log(sideArr)
-    let main = document.querySelector("main")
-    console.log(main)
-
-    if(createTaskBtn.classList.contains("hidden")){
-        createTaskBtn.classList.toggle("hidden")
-    } 
-}
+    e.target.parentElement.remove();
+    storage.deleteObjTask(this);
+};
 
